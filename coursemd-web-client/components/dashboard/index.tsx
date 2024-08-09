@@ -9,12 +9,14 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import GooeyMenu from "./menu";
+import { useState } from "react";
 
 export default function Dashboard() {
     const markdownData = useFileStore((state) => state.markdownData)
+    const updateMarkdownData = useFileStore((state) => state.updateMarkdownData)
 
-    function handleEditorChange(value: any, event: any) {
-
+    function handleEditorChange(value: string | undefined, event: any) {
+        updateMarkdownData(value)
     }
 
     return (

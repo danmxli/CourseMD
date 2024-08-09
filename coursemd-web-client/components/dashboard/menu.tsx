@@ -1,56 +1,68 @@
 import { FiPlus, FiDownload, FiSave, FiCode } from "react-icons/fi";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import { useFileStore } from "@/lib/store";
 
 export default function GooeyMenu() {
+    const markdownData = useFileStore((state) => state.markdownData)
+
+    function downloadMdFile(content: string | undefined, filename: string = 'SYLLABUS.md') {
+        if (!content) {
+            console.error('Undefined markdown content')
+            return
+        }
+
+        const blob = new Blob([content], { type: 'text/markdown' });
+    
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
     return (
-        <div className="absolute bottom-0 right-0 h-[300px]">
+        <div className="absolute bottom-0 left-12 h-[300px]">
             <nav className="menu">
                 <input type="checkbox" className="peer hidden" name="menu" id="menu" />
                 <label
-                    className="absolute bottom-12 right-12 z-10 flex h-14 w-14 scale-125 cursor-pointer items-center justify-center rounded-full bg-black text-white transition-all duration-300 peer-checked:rotate-[135deg] peer-checked:scale-100"
+                    className="shadow-md absolute bottom-12 z-10 flex h-14 w-14 scale-125 cursor-pointer items-center justify-center rounded-full bg-black text-white transition-all duration-300 peer-checked:rotate-[135deg] peer-checked:scale-100"
                     htmlFor="menu"
                 >
                     <FiPlus className="h-5 w-5" />
                 </label>
-                <button
-                    className="absolute bottom-12 right-12 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 ease-in peer-checked:translate-y-[-80px]"
-                >
-                    <FiDownload className="h-5 w-5" />
-                </button>
-                <button
-                    className="absolute bottom-12 right-12 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 ease-in peer-checked:translate-y-[-162px]"
-             >
-                    <FiSave className="h-5 w-5" />
-                </button>
-                <button
-                    className="absolute bottom-12 right-12 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 ease-in peer-checked:translate-y-[-244px]"
-                >
-                    <FiCode className="h-5 w-5" />
-                </button>
+                <HoverCard>
+                    <HoverCardTrigger asChild>
+                        <button
+                            onClick={() => downloadMdFile(markdownData)}
+                            className="shadow-md absolute bottom-12 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 ease-in peer-checked:translate-y-[-80px]"
+                        >
+                            <FiDownload className="h-5 w-5" />
+                        </button>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                        Download as <code>SYLLABUS.md</code>
+                    </HoverCardContent>
+                </HoverCard>
+                <HoverCard>
+                    <HoverCardTrigger asChild>
+                        <button
+                            className="shadow-md absolute bottom-12 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 ease-in peer-checked:translate-y-[-162px]"
+                        >
+                            <FiCode className="h-5 w-5" />
+                        </button>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                        Viewing raw markdown file.
+                    </HoverCardContent>
+                </HoverCard>
             </nav>
-            <svg
-                className="absolute hidden"
-                width="0"
-                height="0"
-                xmlns="http://www.w3.org/2000/svg"
-                version="1.1"
-            >
-                <defs>
-                    <filter id="gooey">
-                        <feGaussianBlur
-                            in="SourceGraphic"
-                            stdDeviation="10"
-                            result="blur"
-                        />
-                        <feColorMatrix
-                            in="blur"
-                            mode="matrix"
-                            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
-                            result="gooey"
-                        />
-                        <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
-                    </filter>
-                </defs>
-            </svg>
         </div>
     );
 }
