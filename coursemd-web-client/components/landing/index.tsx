@@ -44,7 +44,7 @@ export default function LandingPrompt() {
 
         try {
             updateFilePhase("uploading")
-            const response = await fetch(`http://${process.env.NEXT_PUBLIC_SERVICE_DOMAIN}/upload`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVICE_DOMAIN}/upload`, {
                 method: "POST",
                 body: formData,
             });
